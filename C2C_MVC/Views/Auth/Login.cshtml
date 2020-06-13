@@ -1,0 +1,19 @@
+﻿
+@{
+    ViewBag.Title = "Inicio de Sesión";
+}
+
+<form action="/auth/SignIn" method="post">
+    @Html.AntiForgeryToken()
+    <div class="form-group">
+        <label>RUT</label>
+        <input type="text" name="Rut" class="form-control" value="" />
+    </div>
+    <div class="form-group">
+        <label>Contraseña</label>
+        <input type="password" name="Password" class="form-control" value="" />
+    </div>
+    <button type="submit" class="btn btn-success btn-block">
+        <i class="fa fa-sign-in"></i> Inicar Sesión
+    </button>
+</form>

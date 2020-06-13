@@ -1,0 +1,49 @@
+﻿@model C2C_MVC.ViewModels.RegisterViewModel
+@{
+    ViewBag.Title = "Usuarios Registrados";
+    
+}
+
+<h3 class="card-title">Usuarios Registrados</h3>
+<div class="table-responsive">
+    <table class="table table-bordered table-hover table-striped">
+        <thead class="thead-darker">
+            <tr>
+                <th>#</th>
+                <th>RUT</th>
+                <th>Nombre</th>
+                <th>Dirección</th>
+                <th>Telefono</th>
+                <th>F. Nacimiento</th>
+                <th>Email</th>
+                <th>Cargo</th>
+                <th>Estado</th>
+                <th>Gestión</th>
+            </tr>
+        </thead>
+        @foreach (var item in Model.Users)
+        {
+
+        <tr>
+
+            <td>@item.UserId</td>
+            <td>@item.RutUser</td>
+            <td>@item.NombreCompleto</td>
+            <td>@item.DireccionUser</td>
+            <td>@item.TelefonoUser</td>
+            <td>@item.FenacUser</td>
+            <td>@item.EmailUser</td>
+            <td>@item.Cargo.CargoName</td>
+            <td>@item.EstadoUser</td>
+            <td>
+                <a href="/auth/Delete/@item.UserId" class="btn btn-danger btn-sm" title="Eliminar">
+                    <i class="fa fa-trash"></i>
+                </a>
+                <a href="/auth/Update/@item.UserId" class="btn btn-info btn-sm" title="Modificar">
+                    <i class="fa fa-pencil"></i>
+                </a>
+            </td>
+        </tr>
+        }
+    </table>
+</div>

@@ -1,0 +1,77 @@
+﻿@model C2C_MVC.ViewModels.DistribuidorViewModel
+@{
+    ViewBag.Title = "Registro de Distribuidores";
+    
+}
+
+
+<div class="card">
+    <div class="card-header">
+        <h3>Registro de Distribuidores</h3>
+    </div>
+    <div class="card-body">
+        <form action="/distribuidores/crear/" method="post">
+            @Html.AntiForgeryToken()
+            <div class="form-group">
+                <i class="far fa-address-card"></i><Label>RUT:</Label>
+                <input type="text" name="RutDistribuidor" value="@Model.RutDistribuidor" class="form-control" />
+                @Html.ValidationMessageFor(m => m.RutDistribuidor, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                <i class="fas fa-user"> </i><Label> Nombre:</Label>
+                <input type="text" name="NombreDistribuidor" value="@Model.NombreDistribuidor" class="form-control" />
+                @Html.ValidationMessageFor(m => m.NombreDistribuidor, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                <i class="fas fa-mobile-alt"></i><Label>Telefono:</Label>
+                <input type="text" name="TelefonoDistribuidor" value="@Model.TelefonoDistribuidor" class="form-control" />
+                @Html.ValidationMessageFor(m => m.TelefonoDistribuidor, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                <i class="fas fa-map-marked-alt"></i><Label>Dirección:</Label>
+                <input type="text" name="DireccionDistribuidor" value="@Model.DireccionDistribuidor" class="form-control" />
+                @Html.ValidationMessageFor(m => m.DireccionDistribuidor, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-success">Guardar <i class="fa fa-save"></i></button>
+                <button type="reset" class="btn btn-danger">Restablecer <i class="fas fa-trash"></i></button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<h3 class="card-title" >Distribuidores Registrados</h3>
+<div class="table-responsive">
+    <table class="table table-bordered table-hover table-striped">
+        <thead class="thead-darker">
+            <tr>
+                <th>#</th>
+                <th>RUT</th>
+                <th>Nombres</th>
+                <th>Dirección</th>
+                <th>Teléfono</th>
+                <th>Gestión</th>
+            </tr>
+        </thead>
+        @foreach (var item in Model.Distribuidores)
+        {
+        <tr>
+
+            <td>@item.DistribuidorId</td>
+            <td>@item.RutDistribuidor</td>
+            <td>@item.NombreDistribuidor</td>
+            <td>@item.DireccionDistribuidor</td>
+            <td>@item.TelefonoDistribuidor</td>
+            <td>
+                <a href="/distribuidores/Delete/@item.DistribuidorId" class="btn btn-danger btn-sm" title="Eliminar">
+                    <i class="fa fa-trash"></i>
+                </a>
+                <a href="/distribuidores/Update/@item.DistribuidorId" class="btn btn-info btn-sm" title="Modificar">
+                    <i class="fa fa-pencil"></i>
+                </a>
+            </td>
+
+        </tr>
+        }
+    </table>
+</div>

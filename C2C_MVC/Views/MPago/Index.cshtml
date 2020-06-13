@@ -1,0 +1,55 @@
+﻿@model C2C_MVC.ViewModels.MPagoViewModel
+@{
+    ViewBag.Title = "Registro de M. Pagos";
+
+}
+
+<div class="card">
+    <div class="card-header">
+        <h3>Medios de Pago</h3>
+    </div>
+    <div class="card-body">
+        <form action="/mpago/crear" method="post">
+            @Html.AntiForgeryToken()
+            <div class="form-group">
+                <label>Nombre del Medio de Pago:</label>
+                <input type="text" name="MPagoName" value="@Model.MPagoName" class="form-control" />
+                @Html.ValidationMessageFor(m => m.MPagoName, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-success">Guardar <i class="fa fa-save"></i></button>
+                <button type="reset" class="btn btn-danger">Restablecer <i class="fas fa-trash"></i></button>
+            </div>
+        </form>
+    </div>
+
+</div>
+
+<h3 class="card-title">Medios de Pago Registrados</h3>
+<div class="table-responsive">
+    <table class="table table-bordered table-hover table-striped">
+        <thead class="thead-darker">
+            <tr>
+                <th>#</th>
+                <th>Nombre</th>
+                <th>Gestión</th>
+            </tr>
+        </thead>
+        @foreach (var item in Model.MPagos)
+        {
+        <tr>
+
+            <td>@item.MPagoId</td>
+            <td>@item.MPagoName</td>
+            <td>
+                <a href="/mpago/Delete/@item.MPagoId" class="btn btn-danger btn-sm" title="Eliminar">
+                    <i class="fa fa-trash"></i>
+                </a>
+                <a href="/mpago/Update/@item.MPagoId" class="btn btn-info btn-sm" title="Modificar">
+                    <i class="fa fa-pencil"></i>
+                </a>
+            </td>
+        </tr>
+        }
+    </table>
+</div>

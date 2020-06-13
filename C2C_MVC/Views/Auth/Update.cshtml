@@ -1,0 +1,85 @@
+﻿@model C2C_MVC.ViewModels.RegisterViewModel
+@{
+    ViewBag.Title = "Registro de Usuarios";
+    List<SelectListItem> cargos = (List<SelectListItem>)ViewBag.cargos;
+}
+
+<div class="card">
+    <div class="card-header">
+        <h3>Actualización de Usuario</h3>
+    </div>
+    <div class="card-body">
+        <form action="/auth/update" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="UserId" value="@Model.UserId" />
+            <div class="form-group">
+                <i class="far fa-address-card"></i><Label>RUT:</Label>
+                <input type="text" name="RutUser" value="@Model.RutUser" class="form-control" />
+                @Html.ValidationMessageFor(m => m.RutUser, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                <i class="fas fa-user"> </i><Label> Nombre:</Label>
+                <input type="text" name="NombreUser" value="@Model.NombreUser" class="form-control" />
+                @Html.ValidationMessageFor(m => m.NombreUser, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                <i class="fab fa-buysellads"></i><Label>Apellido:</Label>
+                <input type="text" name="ApellidoUser" value="@Model.ApellidoUser" class="form-control" />
+                @Html.ValidationMessageFor(m => m.ApellidoUser, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                <i class="fas fa-mobile-alt"></i><Label>Telefono:</Label>
+                <input type="text" name="TelefonoUser" value="@Model.TelefonoUser" class="form-control" />
+                @Html.ValidationMessageFor(m => m.TelefonoUser, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                <i class="fas fa-map-marked-alt"></i><Label>Dirección:</Label>
+                <input type="text" name="DireccionUser" value="@Model.DireccionUser" class="form-control" />
+                @Html.ValidationMessageFor(m => m.DireccionUser, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                <i class="fas fa-key"></i><Label>Contraseña:</Label>
+                <input type="password" name="Password" class="form-control" />
+                @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                <i class="fas fa-unlock"></i><Label>Confirmar Contraseña:</Label>
+                <input type="password" name="ConfirmPassword" class="form-control" />
+                @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                <i class="fab fa-odnoklassniki"></i><Label>Alias:</Label>
+                <input type="text" name="AliasUser" value="@Model.AliasUser" class="form-control" />
+                @Html.ValidationMessageFor(m => m.AliasUser, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                <i class="fas fa-birthday-cake"></i><Label>Fecha de Nacimiento:</Label>
+                <input type="date" name="FenacUser" value="@Model.FenacUser" class="form-control" />
+                @Html.ValidationMessageFor(m => m.FenacUser, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                <i class="far fa-address-card"></i><Label>Cargo:</Label>
+                @Html.DropDownList("CargoId", cargos, "Seleccione Cargo", new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.CargoId, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                <i class="fas fa-at"></i><Label>Email:</Label>
+                <input type="email" name="EmailUser" value="@Model.EmailUser" class="form-control" />
+                @Html.ValidationMessageFor(m => m.EmailUser, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                <i class="far fa-address-card"></i><Label>Estado:</Label>
+                <select class="custom-select" id="EstadoUser" name="EstadoUser" required>
+                    <option selected disabled value="@Model.EstadoUser">Seleccionar</option>
+                    <option>Activo</option>
+                    <option>Inactivo</option>
+                </select>
+                @Html.ValidationMessageFor(m => m.EstadoUser, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-success">Guardar <i class="fa fa-save"></i></button>
+                <button type="reset" class="btn btn-danger">Restablecer <i class="fas fa-trash"></i></button>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,46 @@
+﻿@model C2C_MVC.ViewModels.ProductoViewModel
+@{
+    ViewBag.Title = "Registro de Productos";
+    List<SelectListItem> categorias = (List<SelectListItem>)ViewBag.categorias;
+}
+
+<div class="card">
+    <div class="card-header">
+        <h3>Registro de Productos</h3>
+    </div>
+    <div class="card-body">
+        <form action="/producto/update/" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="ProdutoId" value="@Model.ProdutoId" />
+            <div class="form-group">
+                <i class="fas fa-user"> </i><Label> Nombre:</Label>
+                <input type="text" name="NombreProducto" value="@Model.NombreProducto" class="form-control" />
+                @Html.ValidationMessageFor(m => m.NombreProducto, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                <i class="fab fa-buysellads"></i><Label>Cantidad:</Label>
+                <input type="number" name="CantidadProducto" value="@Model.CantidadProducto" class="form-control" />
+                @Html.ValidationMessageFor(m => m.CantidadProducto, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                <i class="fas fa-mobile-alt"></i><Label>Precio Compra:</Label>
+                <input type="number" name="PrecioCProducto" value="@Model.PrecioCProducto" class="form-control" />
+                @Html.ValidationMessageFor(m => m.PrecioCProducto, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                <i class="fas fa-map-marked-alt"></i><Label>Precio Venta:</Label>
+                <input type="number" name="PrecioVPrdoducto" value="@Model.PrecioVPrdoducto" class="form-control" />
+                @Html.ValidationMessageFor(m => m.PrecioVPrdoducto, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                <i class="far fa-address-card"></i><Label>Categoria:</Label>
+                @Html.DropDownList("CategoriaId", categorias, "Seleccione Categoria", new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.CategoriaId, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-success">Guardar <i class="fa fa-save"></i></button>
+                <button type="reset" class="btn btn-danger">Restablecer <i class="fas fa-trash"></i></button>
+            </div>
+        </form>
+    </div>
+</div>
