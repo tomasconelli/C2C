@@ -8,6 +8,7 @@ using System.Web.Mvc;
 
 namespace C2C_MVC.Controllers
 {
+    [Authorize]
     public class DistribuidoresController : Controller
     {
         private readonly ApplicationDbContext db;
@@ -16,19 +17,9 @@ namespace C2C_MVC.Controllers
             db = new ApplicationDbContext();
         }
 
-        public bool init()
-        {
-            if (Session["UserId"] == null)
-                return false;
-            return true;
-        }
         [HttpGet]
         public ActionResult Index()
         {
-            if (init() == false)
-            {
-                return RedirectToAction("Login", "Auth");
-            }
             var distribuides = db.Distribuidors.OrderBy(x => x.NombreDistribuidor).ToList();
 
             DistribuidorViewModel vm = new DistribuidorViewModel();
@@ -38,10 +29,6 @@ namespace C2C_MVC.Controllers
         [HttpGet]
         public ActionResult Crear()
         {
-            if (init() == false)
-            {
-                return RedirectToAction("Login", "Auth");
-            }
             var distribuides = db.Distribuidors.OrderBy(x => x.NombreDistribuidor).ToList();
 
             DistribuidorViewModel vm = new DistribuidorViewModel();
@@ -140,6 +127,12 @@ namespace C2C_MVC.Controllers
             db.SaveChanges();
 
             return RedirectToAction("Index");
+        }
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+                db.Dispose();
+            base.Dispose(disposing);
         }
 
     }

@@ -1,0 +1,346 @@
+﻿
+@model C2C_MVC.ViewModels.DetalleVentaViewModel
+
+@{
+    ViewBag.Title = "Venta de Productos";
+    List<SelectListItem> mpagos = (List<SelectListItem>)ViewBag.mpagos;
+    List<SelectListItem> productos = (List<SelectListItem>)ViewBag.productos;
+
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script src="~/Js/alertify.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <link href="/Css/alertify.core.css" rel="stylesheet" />
+    <link href="/Css/alertify.default.css" rel="stylesheet" />
+    @*<meta http-equiv="refresh" content="6">*@
+
+}
+
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        //botones
+        $("#finalizar").click(function () {
+            alertify.alert("Boton Iniciado");
+            //console.info('hola');
+            var i = 0;
+            var envio = "{Fecha:'" + $("#id_fecha").val() + "',ModoPago:'" + $("#modoPago").val() + "',IdCliente:'" + $("#codigoCliente").val() + "',IdCabecera:'2',Total:'" + $('#TotalaPagar').val() + "',";
+            $("#detalle tbody tr").each(function (index) {
+                if (i == 0) {
+                    envio += "ListadoDetalle:[{ProdutoId:'" + $(this).find('td').eq(1).text() +
+                        "',NombreProducto:'" + $(this).find('td').eq(2).text() +
+                        "',Cantidad:'" + $(this).find('td').eq(2).text() +
+                        "',DetalleVentaCantidad:'" + $(this).find('td').eq(3).text() +
+                        "',DetalleVentaPrecio:'" + $(this).find('td').eq(4).text() +
+                        "',DetalleVentaTotal:'" + $(this).find('td').eq(5).text() +
+                        "',DetalleVentaObs:'" + $(this).find('td').eq(6).text() + "'}";
+                } else {
+                    envio += ",{ProdutoId:'" + $(this).find('td').eq(1).text() +
+                        "',Cantidad:'" + $(this).find('td').eq(2).text() +
+                        "',DetalleVentaCantidad:'" + $(this).find('td').eq(3).text() +
+                        "',DetalleVentaPrecio:'" + $(this).find('td').eq(4).text() +
+                        "',DetalleVentaTotal:'" + $(this).find('td').eq(5).text() +
+                        "',DetalleVentaObs:'" + $(this).find('td').eq(6).text() + "'}"
+                }
+                i = 1;
+            });
+            envio += "]}";
+
+            var json = eval("(" + envio + ')');
+
+            //alertify.alert("INGRESE DATOS");
+            console.info(json);
+
+            $.ajax({
+                url: "GuardarVenta",
+                data: JSON.stringify(json),
+                type: "POST",
+                async: false,//this makes the ajax-call blocking
+                contentType: 'application/json;charset=UTF-8',
+                dataType: 'json',
+                success: function (response) {
+                    alertify.alert(response);
+                    valid = response.valid;
+                },
+                error: function (error) {
+                    alertify.alert(error);
+
+                }
+            });
+        });
+
+    });
+    //variables
+    var total = 0;
+    var valor = 0;
+    var subtotal = 0;
+    function obtenerCliente(Cliente) {
+
+        var watchclose = setInterval(function () {
+            $("#txtnombre").val(Cliente.DatosPersonales);
+            $("#idCliente").val(Cliente.Identificacion);
+            $("#codigoCliente").val(Cliente.Codigo);
+
+        });
+    }
+
+    function fn_agregar() {
+
+        cadena = "<tr>"
+        cadena = cadena + "<td>" + $("#id_venta").val() + "</td>";
+        cadena = cadena + "<td>" + $("#ProdutoId").val() + "</td>";
+        cadena = cadena + "<td>" + $("#NombreProducto").val() + "</td>";
+        cadena = cadena + "<td>" + $("#DetalleVentaCantidad").val() + "</td>";
+        cadena = cadena + "<td>" + $("#DetalleVentaPrecio").val() + "</td>";
+        
+        var y = 0;
+        var x = 0;
+        y = $("#DetalleVentaCantidad").val();
+        x = $("#DetalleVentaPrecio").val();
+        subtotal = (x * y);
+        cadena = cadena + "<td>" + subtotal + "</td>"
+
+        cadena = cadena + "<td>" + $("#DetalleVentaObs").val() + "</td>";
+
+        cadena = cadena + "<td><input type='button' class='borrar' value='Eliminar' /> </td>";
+        $("#detalle tbody").append(cadena);
+        sumar();
+        fn_dar_eliminar();
+        limpiarCliente();
+        limpiar();
+    };
+    function limpiar() {
+        $("#ProdutoId").val("");
+        $("#NombreProducto").val("");
+        $("#DetalleVentaPrecio").val("");
+        $("#DetalleVentaCantidad").val("");
+        $("#ListaProducto").val("");
+        $("#cantidad").val("");
+        $("#DetalleVentaObs").val("Sin Observaciones");
+    }
+    function limpiarCliente() {
+        $("tbody tr #txtnombre").val('');
+        $("tbody tr #idCliente").val('');
+        $("tbody tr #codigoCliente").val('');
+    }
+    function limpiarDetalle() {
+        $("#detalle tbody tr").val("");
+    }
+    function sumar() {
+        total = total + subtotal;
+        console.info(total);
+        $("#TotalaPagar").val(total);
+
+    }
+    function restar() {
+        total = total - valor;
+        $("#TotalaPagar").val(total);
+    }
+    function fn_dar_eliminar() {
+        $("elimina").click(function () {
+            valor = $(this).parents("tr").find("td").eq(5).html();
+
+            $(this).parents("tr").fadeOut("normal", function () {
+                $(this).remove();
+                restar();
+            });
+        });
+    };
+
+    $(function () {
+        $(document).on('click', '.borrar', function (event) {
+            valor = $(this).parents("tr").find("td").eq(5).html();
+            event.preventDefault();
+            $(this).closest('tr').remove();
+            restar();
+        });
+    });
+
+
+</script>
+
+
+<div class="card">
+    <div class="card-header">
+        <h3>Venta de Productos</h3>
+    </div>
+    <div class="card-body">
+        <table id="encabezado" class="table">
+            <thead>
+                <tr style="font-size:20px;">
+                    <th>Id Venta <input style="color:red; font-size:12px;" class="form-control" type="number" id="id_venta" value="@ViewBag.lastId" readonly /></th>
+                    <th>
+                        Fecha
+                        <input style="color:red;font-size:12px;" class="form-control" type="text" id="id_fecha" readonly value="@DateTime.Now.Day-@DateTime.Now.Month-@DateTime.Now.Year" />
+
+                    </th>
+                    <th>
+                        Hora
+                        <input style="color:red;font-size:12px;" class="form-control" type="text" id="id_fecha" readonly value="@DateTime.Now.Hour:@DateTime.Now.Minute:@DateTime.Now.Second" />
+
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr style="font-size:20px;">
+                    <td>
+                        Medio de Pago
+                        <div class="col-lg-10">
+                            @Html.DropDownList("MPagoId", mpagos, "Seleccione Medio de Pago", new { @class = "form-control" })
+                        </div>
+                    </td>
+                    <td>
+                        Nombre Cliente
+                        <div class="col-lg-10">
+                            @Html.DropDownList("MPagoId", mpagos, "Seleccione Medio de Pago", new { @class = "form-control" })
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table>
+            <tbody>
+                <tr style="font-size:20px;">
+                    <td>
+                        <h3 class="card-title">Busqueda de Productos</h3>
+                        <form class="form-inline" action="">
+                            <select class="form-control" id="product-search" name="searchProductoId">
+                                <option></option>
+                                @foreach (var item in Model.Productos1)
+                                {
+                                    <option value="@item.ProdutoId">@item.NombreProducto</option>
+                                }
+                            </select>
+                        </form>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover table-striped">
+                                <thead class="thead-darker">
+                                    <tr>
+                                        <th>Id</th>
+                                        <th>Nombre</th>
+                                        <th>Precio</th>
+                                        <th>Cantidad</th>
+                                        <th>Observacón</th>
+                                        <th>Agregar</th>
+                                        <th>Limpiar</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabla-producto"></tbody>
+                            </table>
+                        </div>
+
+                    </td>
+                </tr>
+            </tbody>
+
+        </table>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h3>Detalle de venta</h3>
+        </div>
+        <div class="card-body">
+            <form action="/" method="post">
+                <table id="detalle" class="lista table" border="1">
+                    <thead class="thead-dark" style="font-size:18px;">
+
+                        <tr class="bg-danger">
+                            <th>Ticket</th>
+                            <th>Id</th>
+                            <th>Producto</th>
+                            <th>Cantidad</th>
+                            <th>Precio</th>
+                            <th>Total</th>
+                            <th>Observación</th>
+                            <th>Eliminar</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+
+                </table>
+
+                <table class="table">
+                    <tr>
+                        <td style="float:right;font-size:20px;">Total a Pagar</td>
+                        <th></th>
+                        <td><input style="font-size:20px; font-weight:700;" class="form-control" type="text" name="TotalaPagar" id="TotalaPagar" required readonly /></td>
+                    </tr>
+                </table>
+                <input class="btn btn-success btn-lg" type="button" id="finalizar" value="Guardar Venta" />
+                <input class="btn btn-success btn-lg" type="button" id="txtnueva" value="Nueva" />
+            </form>
+        </div>
+    </div>
+
+            <script>
+                $(document).ready(function () {
+                    $("#txtnueva").click(function () {
+
+                        $.ajax({
+                            success: function (res) {
+                                alertify.alert("exito");
+                                window.location.reload().ajax();
+                            }
+                        });
+                    });
+                });
+            </script>
+
+            <input type="button" id="boton1" value="presioname">
+
+            <script>
+                $(document).ready(function (e) {
+                    $("#boton1").click(function (e) {
+                        alert("Usted ha precionado el boton");
+                    });
+                });
+            </script>
+        </div>
+
+        @section scripts
+    {
+
+            <script>
+
+
+                $(document).on('change',
+                    '#product-search',
+                    function () {
+                        var productoId = $(this).val();
+
+                        fetch('/detalleventa/GetProductoJson?searchProductoId=' + productoId).then(function (res) {
+
+                            return res.json();
+
+                        }).then(function (data) {
+                            var html = '';
+                            for (let item of data) {
+                                html += `
+                                            <tr>
+
+                                            <td><input style="font-size:15px; font-weight:700;" value="${item.ProdutoId}" type="number" id="ProdutoId" class="form-control" required readonly /></td>
+                                            <td><input style="font-size:15px; font-weight:700;" value="${item.NombreProducto}" class="form-control" type="text" id="NombreProducto" required readonly /></td>
+                                            <td><input style="font-size:15px; font-weight:700;" value="${item.PrecioVPrdoducto}" type="number" id="DetalleVentaPrecio" class="form-control" required readonly /></td>
+                                            <td><input style="font-size:15px; font-weight:700;" class="form-control" type="number" id="DetalleVentaCantidad" value="Ingrese Cantidad" onfocus="this.value = '';" required /></td>
+                                            <td><input style="font-size:15px; font-weight:700;" class="form-control" type="text" id="DetalleVentaObs" value="Sin Observación" onfocus="this.value = '';" required /></td>
+                                            <td><button type="button" onclick="javascript:fn_agregar();"  class="btn btn-save btn-sm" title="Eliminar">
+                                                <i class="fa fa-plus fa-2x"></i>
+                                            </button></td>
+                                            <td><button type="button" onclick="javascript:limpiar();"  class="btn btn-save btn-sm" title="Eliminar">
+                                                <i class="fa fa-trash fa-2x"></i>
+                                            </button></td>
+                                            </tr>
+
+                                    `;
+                            }
+
+                            $('#tabla-producto').html(html);
+
+                        });
+
+                    });
+
+            </script>
+        }

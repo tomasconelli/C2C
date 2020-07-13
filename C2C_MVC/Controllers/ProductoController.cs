@@ -8,6 +8,7 @@ using System.Web.Mvc;
 
 namespace C2C_MVC.Controllers
 {
+    [Authorize(Roles =Helpers.StringHelper.ROLE_ADMINISTRATOR)]
     public class ProductoController : Controller
     {
         private readonly ApplicationDbContext db;
@@ -16,19 +17,10 @@ namespace C2C_MVC.Controllers
             db = new ApplicationDbContext();
         }
 
-        public bool init()
-        {
-            if (Session["UserId"] == null)
-                return false;
-            return true;
-        }
         // GET: Auth
         public ActionResult Index(string q)
         {
-            if (init() == false)
-            {
-                return RedirectToAction("Login", "Auth");
-            }
+
             var productos = db.Productoes.OrderBy(x => x.ProdutoId).ToList();
             var categorias = db.Categorias.OrderBy(z => z.CategoriaId).ToList();
             
@@ -71,10 +63,7 @@ namespace C2C_MVC.Controllers
         [HttpGet]
         public ActionResult Crear()
         {
-            if (init() == false)
-            {
-                return RedirectToAction("Login", "Auth");
-            }
+
             ProductoViewModel vm = new ProductoViewModel();
             llenarCBProductos();
 
@@ -187,6 +176,12 @@ namespace C2C_MVC.Controllers
             db.SaveChanges();
 
             return RedirectToAction("Index");
+        }
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+                db.Dispose();
+            base.Dispose(disposing);
         }
 
     }

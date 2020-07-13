@@ -8,6 +8,7 @@ using System.Web.Mvc;
 
 namespace C2C_MVC.Controllers
 {
+    [Authorize]
     public class CategoriaController : Controller
     {
         private readonly ApplicationDbContext db;
@@ -16,19 +17,9 @@ namespace C2C_MVC.Controllers
             db = new ApplicationDbContext();
         }
 
-        public bool init()
-        {
-            if (Session["UserId"] == null)
-                return false;
-            return true;
-        }
         [HttpGet]
         public ActionResult Index()
         {
-            if (init() == false)
-            {
-                return RedirectToAction("Login", "Auth");
-            }
             var categorias = db.Categorias.OrderBy(x => x.CategoriaId).ToList();
 
             CategoriaViewModel vm = new CategoriaViewModel();
@@ -38,10 +29,6 @@ namespace C2C_MVC.Controllers
         [HttpGet]
         public ActionResult Crear()
         {
-            if (init() == false)
-            {
-                return RedirectToAction("Login", "Auth");
-            }
             var categorias = db.Categorias.OrderBy(x => x.CategoriaId).ToList();
 
             CategoriaViewModel vm = new CategoriaViewModel();
@@ -130,6 +117,12 @@ namespace C2C_MVC.Controllers
             TempData["SuccessMessage"] = "Categoria actualizada correctamente";
 
             return RedirectToAction("Index");
+        }
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+                db.Dispose();
+            base.Dispose(disposing);
         }
 
     }

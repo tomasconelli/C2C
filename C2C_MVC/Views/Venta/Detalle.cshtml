@@ -1,0 +1,39 @@
+﻿
+    @model C2C_MVC.ViewModels.DetalleVentaViewModel
+@{
+    ViewBag.Title = "Detalle de Ticket";
+
+}
+
+
+<h3 class="card-title">Detalle Venta</h3>
+<div class="table-responsive">
+    <table class="table table-bordered table-hover table-striped">
+        <thead class="thead-darker">
+            <tr>
+                <th>#</th>
+                <th>Producto</th>
+                <th>Cantidad</th>
+                <th>Precio</th>
+                <th>Total</th>
+                <th>Observaciones</th>
+
+            </tr>
+        </thead>
+        @foreach (var item in Model.DetalleVentas)
+        {
+
+            <tr>
+
+                <td>@item.DetalleVentaId</td>
+                <td>@item.Producto.NombreProducto</td>
+                <td>@item.DetalleVentaCantidad</td>
+                <td>@item.DetalleVentaPrecio</td>
+                <td>@item.DetalleVentaTotal</td>
+                <td>@item.DetalleVentaObs</td>
+
+            </tr>
+        }
+    </table>
+    <a href="javascript:history.back()"> Volver</a>
+</div>

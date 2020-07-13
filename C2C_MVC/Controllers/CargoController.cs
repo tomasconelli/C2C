@@ -8,6 +8,7 @@ using System.Web.Mvc;
 
 namespace C2C_MVC.Controllers
 {
+    [Authorize]
     public class CargoController : Controller
     {
         private readonly ApplicationDbContext db;
@@ -16,19 +17,9 @@ namespace C2C_MVC.Controllers
             db = new ApplicationDbContext();
         }
 
-        public bool init()
-        {
-            if (Session["UserId"] == null)
-                return false;
-            return true;
-        }
         [HttpGet]
         public ActionResult Index()
         {
-            if (init() == false)
-            {
-                return RedirectToAction("Login", "Auth");
-            }
             var cargos = db.Cargoes.OrderBy(x => x.CargoId).ToList();
 
             CargoViewModel vm = new CargoViewModel();
@@ -38,10 +29,6 @@ namespace C2C_MVC.Controllers
         [HttpGet]
         public ActionResult Crear()
         {
-            if (init() == false)
-            {
-                return RedirectToAction("Login", "Auth");
-            }
             var cargos = db.Cargoes.OrderBy(x => x.CargoId).ToList();
 
             CargoViewModel vm = new CargoViewModel();
@@ -62,6 +49,7 @@ namespace C2C_MVC.Controllers
                 }
                 var cargo = new Cargo();
                 cargo.CargoName = model.CargoName;
+                cargo.CreatedAt = DateTime.Now;
                 db.Cargoes.Add(cargo);
                 db.SaveChanges();
                 TempData["SuccessMessage"] = "Cargo Creada Correctamente";
@@ -125,10 +113,17 @@ namespace C2C_MVC.Controllers
             }
 
             cargo.CargoName = vm.CargoName;
+            cargo.UpdatedAt = DateTime.Now;
             db.Entry(cargo).State = System.Data.Entity.EntityState.Modified;
             db.SaveChanges();
 
             return RedirectToAction("Index");
+        }
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+                db.Dispose();
+            base.Dispose(disposing);
         }
     }
 }

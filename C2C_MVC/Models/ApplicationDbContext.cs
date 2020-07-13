@@ -28,6 +28,10 @@
         public virtual DbSet<Producto> Productoes { get; set; }
         public virtual DbSet<MPago> MPagoes { get; set; }
         public virtual DbSet<Distribuidor> Distribuidors { get; set; }
+        public virtual DbSet<Venta> Ventas { get; set; }
+        public virtual DbSet<DetalleVenta> DetalleVentas { get; set; }
+        public virtual DbSet<Compra> Compras { get; set; }
+        public virtual DbSet<DetalleCompra> DetalleCompras { get; set; }
 
     }
 

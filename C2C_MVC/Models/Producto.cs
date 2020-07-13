@@ -23,5 +23,10 @@ namespace C2C_MVC.Models
         public int CategoriaId { get; set; }
         [ForeignKey("CategoriaId")]
         public Categoria Categoria { get; set; }
+
+
+        
+
+
     }
 }

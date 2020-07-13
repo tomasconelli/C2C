@@ -1,5 +1,6 @@
 namespace C2C_MVC.Migrations
 {
+    using C2C_MVC.Helpers;
     using C2C_MVC.Models;
     using System;
     using System.Data.Entity;
@@ -36,7 +37,11 @@ namespace C2C_MVC.Migrations
                     UpdatedAt = DateTime.Now
                 }
                     );
+
             }
+
+            UserSeeder.Seeder(context);
+
         }
     }
 }

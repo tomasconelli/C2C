@@ -1,13 +1,19 @@
-﻿using C2C_MVC.Models;
+﻿using C2C_MVC.Helpers;
+using C2C_MVC.Models;
 using C2C_MVC.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Web;
 using System.Web.Mvc;
+using System.Data.Entity;
+using Microsoft.AspNet.Identity;
+using System.Threading.Tasks;
 
 namespace C2C_MVC.Controllers
 {
+
     public class AuthController : Controller
     {
         private readonly ApplicationDbContext db;
@@ -18,9 +24,7 @@ namespace C2C_MVC.Controllers
 
         public bool init()
         {
-            if (Session["UserId"] == null)
-                return false;
-            return true;
+            return Session["UserId"] != null;
         }
         // GET: Auth
         public ActionResult Index()
@@ -85,7 +89,7 @@ namespace C2C_MVC.Controllers
                 user.TelefonoUser = model.TelefonoUser;
                 user.DireccionUser = model.DireccionUser;
                 byte[] psHash, psSalt;
-                CreatePasswordHash(model.Password, out psHash, out psSalt);
+                PasswordHelper.CreatePasswordHash(model.Password, out psHash, out psSalt);
                 user.PasswordUserHash = psHash;
                 user.PasswordUserSalt = psSalt;
                 user.AliasUser = model.AliasUser;
@@ -101,33 +105,11 @@ namespace C2C_MVC.Controllers
             }
             return View(model);
         }
-        private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
-        {
-            using (var hmac = new System.Security.Cryptography.HMACSHA512())
-            {
-                passwordSalt = hmac.Key;
-                passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-            }
-        }
 
-        private bool CheckPassword(string password, byte[] passwordHash, byte[] passwordSalt)
-        {
-            using (var hmac = new System.Security.Cryptography.HMACSHA512(passwordSalt))
-            {
-                var passwordComputed = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-                for (int i = 0; i < passwordComputed.Length; i++)
-                {
-                    if (passwordComputed[i] != passwordHash[i])
-                        return false;
-                }
-            }
-
-            return true;
-        }
 
         public ActionResult Login()
         {
-            Session["RutUser"] = null;
+            OutOwin();
             return View();
         }
         [HttpPost]
@@ -138,11 +120,9 @@ namespace C2C_MVC.Controllers
             {
                 User user = db.Users.FirstOrDefault(x => x.RutUser == model.Rut);
                
-                if (user != null && CheckPassword(model.Password, user.PasswordUserHash, user.PasswordUserSalt))
+                if (user != null && PasswordHelper.CheckPassword(model.Password, user.PasswordUserHash, user.PasswordUserSalt))
                 {
-                    Session["UserId"] = user.UserId;
-                    Session["RutUser"] = user.RutUser;
-                    Session["UserName"] = user.NombreCompleto;
+                    InitOwin(user);
                     TempData["SuccessMessage"] = $"Bienvenido { user.NombreCompleto}";
                     return RedirectToAction("Index", "Home");
                 }
@@ -152,6 +132,47 @@ namespace C2C_MVC.Controllers
             }
             TempData["ErrorMessage"] = "Error usuario y/o Contraseña";
             return RedirectToAction("Login");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult SignOut(LoginViewModel model)
+        {
+
+            OutOwin();
+            return RedirectToAction("Login");
+        }
+
+        private void OutOwin()
+        {
+            var context = Request.GetOwinContext();
+            var authManager = context.Authentication;
+
+            authManager.SignOut();
+        }
+
+
+        private void InitOwin(User user)
+        {
+            var claims = new[]
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
+                new Claim(ClaimTypes.Name, user.RutUser),
+                new Claim(ClaimTypes.Email, user.EmailUser),
+                new Claim("FullName", user.NombreCompleto),
+            };
+
+            var identity = new ClaimsIdentity(claims, DefaultAuthenticationTypes.ApplicationCookie);
+            var cargos = db.Cargoes.FirstOrDefault(x => x.CargoId == user.CargoId);
+            /* var cargos = await db.Cargoes.Where(x => x.CargoId == user.CargoId).Select(x => x.CargoName).ToListAsync();*/
+            var cargo = cargos;
+            identity.AddClaim(new Claim(ClaimTypes.Role, cargo.CargoName));
+
+            var context = Request.GetOwinContext();
+            var authManager = context.Authentication;
+
+            authManager.SignIn(identity);
+            
         }
 
         public ActionResult Usuario(string q)
@@ -190,7 +211,7 @@ namespace C2C_MVC.Controllers
             db.Users.Remove(user);
             db.SaveChanges();
             TempData["SuccessMessage"] = "Uauario borrado correctamente";
-            return RedirectToAction("Index", "Auth");
+            return RedirectToAction("Usuario", "Auth");
         }
 
         [HttpGet]
@@ -242,7 +263,7 @@ namespace C2C_MVC.Controllers
             user.TelefonoUser = vm.TelefonoUser;
             user.DireccionUser = vm.DireccionUser;
             byte[] psHash, psSalt;
-            CreatePasswordHash(vm.Password, out psHash, out psSalt);
+            PasswordHelper.CreatePasswordHash(vm.Password, out psHash, out psSalt);
             user.PasswordUserHash = psHash;
             user.PasswordUserSalt = psSalt;
             user.AliasUser = vm.AliasUser;
@@ -256,6 +277,11 @@ namespace C2C_MVC.Controllers
             return RedirectToAction("Usuario", "auth");
         }
 
-
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+                db.Dispose();
+            base.Dispose(disposing);
+        }
     }
 }

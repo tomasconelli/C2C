@@ -49,7 +49,34 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.3\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.Owin, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.Owin.2.2.3\lib\net45\Microsoft.AspNet.Identity.Owin.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Owin, Version=4.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.4.1.0\lib\net45\Microsoft.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Host.SystemWeb, Version=4.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Host.SystemWeb.4.1.0\lib\net45\Microsoft.Owin.Host.SystemWeb.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.3.0.1\lib\net45\Microsoft.Owin.Security.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.Cookies, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.Cookies.3.0.1\lib\net45\Microsoft.Owin.Security.Cookies.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.OAuth, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.OAuth.3.0.1\lib\net45\Microsoft.Owin.Security.OAuth.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
+      <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
+    </Reference>
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
     <Reference Include="System.Web.DynamicData" />
@@ -101,10 +128,21 @@
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\Site.css" />
+    <Content Include="Css\alertify.core.css" />
+    <Content Include="Css\alertify.default.css" />
+    <Content Include="Css\sb-admin-2.css" />
+    <Content Include="Css\sb-admin-2.min.css" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
+    <Content Include="Js\alertify.js" />
+    <Content Include="Js\alertify.min.js" />
+    <Content Include="Js\modernizr-2.6.2.js" />
+    <Content Include="Js\sb-admin-2.js" />
+    <Content Include="Js\sb-admin-2.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Css\alertify.bootstrap.css" />
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -118,16 +156,22 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="App_Start\StartUp.Auth.cs" />
     <Compile Include="Controllers\AuthController.cs" />
     <Compile Include="Controllers\CargoController.cs" />
     <Compile Include="Controllers\CategoriaController.cs" />
+    <Compile Include="Controllers\DetalleVentaController.cs" />
     <Compile Include="Controllers\DistribuidoresController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MPagoController.cs" />
     <Compile Include="Controllers\ProductoController.cs" />
+    <Compile Include="Controllers\VentaController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\PasswordHelper.cs" />
+    <Compile Include="Helpers\StringHelper.cs" />
+    <Compile Include="Helpers\UserClaimHelper.cs" />
     <Compile Include="Migrations\202006070050220_TodoDeNuevo.cs" />
     <Compile Include="Migrations\202006070050220_TodoDeNuevo.Designer.cs">
       <DependentUpon>202006070050220_TodoDeNuevo.cs</DependentUpon>
@@ -140,25 +184,48 @@
     <Compile Include="Migrations\202006070252247_CreateTableDistribuidor.Designer.cs">
       <DependentUpon>202006070252247_CreateTableDistribuidor.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202006270229514_CreateTableVenta.cs" />
+    <Compile Include="Migrations\202006270229514_CreateTableVenta.Designer.cs">
+      <DependentUpon>202006270229514_CreateTableVenta.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202006270250565_CreateTableCompra.cs" />
+    <Compile Include="Migrations\202006270250565_CreateTableCompra.Designer.cs">
+      <DependentUpon>202006270250565_CreateTableCompra.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202006300740289_alterTableDetalle.cs" />
+    <Compile Include="Migrations\202006300740289_alterTableDetalle.Designer.cs">
+      <DependentUpon>202006300740289_alterTableDetalle.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202006300743057_alterTableDetalleFk.cs" />
+    <Compile Include="Migrations\202006300743057_alterTableDetalleFk.Designer.cs">
+      <DependentUpon>202006300743057_alterTableDetalleFk.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Migrations\UserSeeder.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
     <Compile Include="Models\BaseEntity.cs" />
     <Compile Include="Models\Cargo.cs" />
     <Compile Include="Models\Categoria.cs" />
+    <Compile Include="Models\Compra.cs" />
+    <Compile Include="Models\DetalleCompra.cs" />
+    <Compile Include="Models\DetalleVenta.cs" />
     <Compile Include="Models\Distribuidor.cs" />
     <Compile Include="Models\MPago.cs" />
     <Compile Include="Models\Producto.cs" />
     <Compile Include="Models\Role.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Models\UserRole.cs" />
+    <Compile Include="Models\Venta.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\CargoViewModel.cs" />
     <Compile Include="ViewModels\CategoriaViewModel.cs" />
+    <Compile Include="ViewModels\DetalleVentaViewModel.cs" />
     <Compile Include="ViewModels\DistribuidorViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\MPagoViewModel.cs" />
     <Compile Include="ViewModels\ProductoViewModel.cs" />
     <Compile Include="ViewModels\RegisterViewModel.cs" />
+    <Compile Include="ViewModels\VentaViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\web.config" />
@@ -184,6 +251,10 @@
     <Content Include="Views\Cargo\Update.cshtml" />
     <Content Include="Views\Categoria\Update.cshtml" />
     <Content Include="Views\MPago\Update.cshtml" />
+    <Content Include="Views\Venta\Index.cshtml" />
+    <Content Include="Views\DetalleVenta\Index.cshtml" />
+    <Content Include="Views\Venta\Venta.cshtml" />
+    <Content Include="Views\Venta\Detalle.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -203,6 +274,18 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202006070252247_CreateTableDistribuidor.resx">
       <DependentUpon>202006070252247_CreateTableDistribuidor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006270229514_CreateTableVenta.resx">
+      <DependentUpon>202006270229514_CreateTableVenta.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006270250565_CreateTableCompra.resx">
+      <DependentUpon>202006270250565_CreateTableCompra.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006300740289_alterTableDetalle.resx">
+      <DependentUpon>202006300740289_alterTableDetalle.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006300743057_alterTableDetalleFk.resx">
+      <DependentUpon>202006300743057_alterTableDetalleFk.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
