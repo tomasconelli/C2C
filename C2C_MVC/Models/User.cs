@@ -18,6 +18,8 @@ namespace C2C_MVC.Models
         [Required]
         public string ApellidoUser { get; set; }
         [Required]
+        public string SexoUser { get; set; }
+        [Required]
         public string TelefonoUser { get; set; }
         [Required]
         public string DireccionUser { get; set; }

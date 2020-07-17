@@ -1,0 +1,64 @@
+﻿
+@model C2C_MVC.ViewModels.BuyViewModel
+
+@{
+    ViewBag.Title = $"Compra {Model.Buy.BuyId}";
+}
+
+<div class="card mt-5">
+    <div class="card-header">@ViewBag.Title</div>
+    <div class="card-body">
+        <form action="/Buy/AddProduct" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="BuyId" value="@Model.Buy.BuyId"/>
+
+            <div class="form-group">
+                <label>Producto</label>
+                <select name="ProductoId" class="form-control">
+                    <option>Seleccione Producto</option>
+                    @foreach (var item in Model.Productos)
+                    {
+                        <option value="@item.ProdutoId">@item.NombreProducto</option>
+                    }
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Cantidad</label>
+                <input type="number" class="form-control" name="Quantity"/>
+            </div>
+            <button type="submit" class="btn btn-success">
+                <i class="fa fa-save"></i> Agregar
+            </button>
+        </form>
+
+        @if (Model.Buy.BuyProductos.Count > 0)
+        {
+        <div class="table-responsive mt-5">
+            <table class="table table-bordered">
+                <tr>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Precio Compra</th>
+                    <th>Total</th>
+                </tr>
+                @foreach (var item in Model.Buy.BuyProductos)
+                {
+                    <tr>
+                        <td>@item.Producto.NombreProducto</td>
+                        <td>@item.Cantidad</td>
+                        <td>@item.Precio</td>
+                        <td>@item.Total</td>
+                    </tr>
+
+                }
+                <tr>
+                    <td colspan="2">Total</td>
+                    <td>@Model.Buy.Total</td>
+                </tr>
+            </table>
+            <a href="/buy">Volver</a>
+        </div>
+        }
+    </div>
+</div>

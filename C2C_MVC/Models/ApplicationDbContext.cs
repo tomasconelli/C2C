@@ -33,6 +33,9 @@
         public virtual DbSet<Compra> Compras { get; set; }
         public virtual DbSet<DetalleCompra> DetalleCompras { get; set; }
 
+        public virtual DbSet<Buy> Buys { get; set; }
+        public virtual DbSet<BuyProducto> BuyProductos { get; set; }
+
     }
 
     //public class MyEntity

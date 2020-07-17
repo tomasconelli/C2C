@@ -32,5 +32,7 @@ namespace C2C_MVC.ViewModels
         public MPago MPago { get; set; }
         [ForeignKey("UserId")]
         public User User { get; set; }
+        public Buy Buy { get; set; }
+        
     }
 }

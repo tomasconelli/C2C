@@ -27,6 +27,30 @@
                 <input type="text" name="ApellidoUser" value="@Model.ApellidoUser" class="form-control" />
                 @Html.ValidationMessageFor(m => m.ApellidoUser, "", new { @class = "text-danger" })
             </div>
+            @if (Model.SexoUser == "Masculino")
+            {
+                <div class="form-group" data-toggle="buttons">
+                    <i class="fas fa-venus-mars"></i> <Label>Sexo:</Label>
+                    <label class="btn btn-info active">
+                        <i class="fa fa-male"></i> <input type="radio" name="SexoUser" id="Masculino" value="Masculino" checked> Masculino
+                    </label>
+                    <label class="btn btn-info">
+                        <i class="fa fa-female"></i> <input type="radio" name="SexoUser" id="Femenino" value="Femenino"> Femenino
+                    </label>
+                </div>
+            }
+            else
+            {
+                <div class="form-group" data-toggle="buttons">
+                    <i class="fas fa-venus-mars"></i> <Label>Sexo:</Label>
+                    <label class="btn btn-info active">
+                        <i class="fa fa-male"></i> <input type="radio" name="SexoUser" id="Masculino" value="Masculino"> Masculino
+                    </label>
+                    <label class="btn btn-info">
+                        <i class="fa fa-female"></i> <input type="radio" name="SexoUser" id="Femenino" value="Femenino" checked> Femenino
+                    </label>
+                </div>
+            }
             <div class="form-group">
                 <i class="fas fa-mobile-alt"></i><Label>Telefono:</Label>
                 <input type="text" name="TelefonoUser" value="@Model.TelefonoUser" class="form-control" />
@@ -39,12 +63,12 @@
             </div>
             <div class="form-group">
                 <i class="fas fa-key"></i><Label>Contraseña:</Label>
-                <input type="password" name="Password" class="form-control" />
+                <input type="password" name="Password" class="form-control" required/>
                 @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
             </div>
             <div class="form-group">
                 <i class="fas fa-unlock"></i><Label>Confirmar Contraseña:</Label>
-                <input type="password" name="ConfirmPassword" class="form-control" />
+                <input type="password" name="ConfirmPassword" class="form-control" required/>
                 @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-danger" })
             </div>
             <div class="form-group">
@@ -67,15 +91,22 @@
                 <input type="email" name="EmailUser" value="@Model.EmailUser" class="form-control" />
                 @Html.ValidationMessageFor(m => m.EmailUser, "", new { @class = "text-danger" })
             </div>
-            <div class="form-group">
-                <i class="far fa-address-card"></i><Label>Estado:</Label>
-                <select class="custom-select" id="EstadoUser" name="EstadoUser" required>
-                    <option selected disabled value="@Model.EstadoUser">Seleccionar</option>
-                    <option>Activo</option>
-                    <option>Inactivo</option>
-                </select>
-                @Html.ValidationMessageFor(m => m.EstadoUser, "", new { @class = "text-danger" })
-            </div>
+            @if (Model.EstadoUser == "Activo")
+            {
+                <div class="form-group">
+                    <i class="far fa-address-card"></i> <Label>Estado Activo:</Label>
+                    <input type="checkbox" data-val="true" data-val-required="The IsChecked field is required." id="EstadoUser" name="EstadoUser" value="Activo" checked>
+                    <input name="EstadoUser" type="hidden" value="Inactivo">
+                </div>
+            }
+            else
+            {
+                <div class="form-group">
+                    <i class="far fa-address-card"></i> <Label>Estado Activo:</Label>
+                    <input type="checkbox" data-val="true" data-val-required="The IsChecked field is required." id="EstadoUser" name="EstadoUser" value="Activo">
+                    <input name="EstadoUser" type="hidden" value="Inactivo">
+                </div>
+            }
             <div class="form-group">
                 <button type="submit" class="btn btn-success">Guardar <i class="fa fa-save"></i></button>
                 <button type="reset" class="btn btn-danger">Restablecer <i class="fas fa-trash"></i></button>
@@ -83,3 +114,4 @@
         </form>
     </div>
 </div>
+<a href="/home">Home</a>

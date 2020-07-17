@@ -192,8 +192,6 @@ namespace C2C_MVC.Controllers
             int t = q * p;
             int ticket = model.VentaId;
 
-            
-
             if (ModelState.IsValid)
             {
                 var detalleVenta = new DetalleVenta();
@@ -204,6 +202,24 @@ namespace C2C_MVC.Controllers
                 detalleVenta.VentaId = model.VentaId;
                 detalleVenta.DetalleVentaObs = model.DetalleVentaObs;
                 db.DetalleVentas.Add(detalleVenta);
+
+
+                var SProdutoId = model.ProdutoId;
+
+                var sproductos = db.Productoes.OrderBy(x => x.ProdutoId).ToList();
+                var sproducto = sproductos.FirstOrDefault(x => x.ProdutoId == SProdutoId);
+                var stock = sproducto.CantidadProducto;
+                var newStock = stock - model.DetalleVentaCantidad;
+
+                sproducto.CantidadProducto = newStock;
+
+                var total = db.DetalleVentas.Where(x => x.VentaId == lastId).ToList();
+                var total1 = total.Sum(x => x.DetalleVentaTotal);
+
+                
+
+                db.Entry(sproducto).State = System.Data.Entity.EntityState.Modified;
+
                 db.SaveChanges();
 
                 TempData["SuccessMessage"] = "Agregado";

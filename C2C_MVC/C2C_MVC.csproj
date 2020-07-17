@@ -127,6 +127,7 @@
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\c2c.gif" />
     <Content Include="Content\Site.css" />
     <Content Include="Css\alertify.core.css" />
     <Content Include="Css\alertify.default.css" />
@@ -158,6 +159,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\StartUp.Auth.cs" />
     <Compile Include="Controllers\AuthController.cs" />
+    <Compile Include="Controllers\BuyController.cs" />
     <Compile Include="Controllers\CargoController.cs" />
     <Compile Include="Controllers\CategoriaController.cs" />
     <Compile Include="Controllers\DetalleVentaController.cs" />
@@ -200,10 +202,23 @@
     <Compile Include="Migrations\202006300743057_alterTableDetalleFk.Designer.cs">
       <DependentUpon>202006300743057_alterTableDetalleFk.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202007130356292_CrateTableBuyAndBuyProducts.cs" />
+    <Compile Include="Migrations\202007130356292_CrateTableBuyAndBuyProducts.Designer.cs">
+      <DependentUpon>202007130356292_CrateTableBuyAndBuyProducts.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202007162333062_AlterTableUserSexo.cs" />
+    <Compile Include="Migrations\202007162333062_AlterTableUserSexo.Designer.cs">
+      <DependentUpon>202007162333062_AlterTableUserSexo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202007170127145_AlterTableVentas.cs" />
+    <Compile Include="Migrations\202007170127145_AlterTableVentas.Designer.cs">
+      <DependentUpon>202007170127145_AlterTableVentas.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\UserSeeder.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
     <Compile Include="Models\BaseEntity.cs" />
+    <Compile Include="Models\Buy.cs" />
     <Compile Include="Models\Cargo.cs" />
     <Compile Include="Models\Categoria.cs" />
     <Compile Include="Models\Compra.cs" />
@@ -216,7 +231,9 @@
     <Compile Include="Models\User.cs" />
     <Compile Include="Models\UserRole.cs" />
     <Compile Include="Models\Venta.cs" />
+    <Compile Include="Models\BuyProducto.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewModels\BuyViewModel.cs" />
     <Compile Include="ViewModels\CargoViewModel.cs" />
     <Compile Include="ViewModels\CategoriaViewModel.cs" />
     <Compile Include="ViewModels\DetalleVentaViewModel.cs" />
@@ -238,7 +255,6 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
     <Content Include="Views\Shared\_Message.cshtml" />
-    <Content Include="Views\Auth\MPagos.cshtml" />
     <Content Include="Views\Distribuidores\Index.cshtml" />
     <Content Include="Views\Producto\Index.cshtml" />
     <Content Include="Views\Categoria\Index.cshtml" />
@@ -255,6 +271,10 @@
     <Content Include="Views\DetalleVenta\Index.cshtml" />
     <Content Include="Views\Venta\Venta.cshtml" />
     <Content Include="Views\Venta\Detalle.cshtml" />
+    <Content Include="Views\Buy\Index.cshtml" />
+    <Content Include="Views\Buy\Create.cshtml" />
+    <Content Include="Views\Buy\Edit.cshtml" />
+    <Content Include="Views\Home\About.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -286,6 +306,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202006300743057_alterTableDetalleFk.resx">
       <DependentUpon>202006300743057_alterTableDetalleFk.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202007130356292_CrateTableBuyAndBuyProducts.resx">
+      <DependentUpon>202007130356292_CrateTableBuyAndBuyProducts.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202007162333062_AlterTableUserSexo.resx">
+      <DependentUpon>202007162333062_AlterTableUserSexo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202007170127145_AlterTableVentas.resx">
+      <DependentUpon>202007170127145_AlterTableVentas.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

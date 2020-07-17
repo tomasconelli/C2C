@@ -18,7 +18,7 @@ namespace C2C_MVC.ViewModels
         [Display(Name = "Nombre")]
         public string NombreProducto { get; set; }
         [Required]
-        [Range(1,2000)]
+        [Range(0,2000)]
         [Display(Name = "Cantidad")]
         public int CantidadProducto { get; set; }
         [Required]

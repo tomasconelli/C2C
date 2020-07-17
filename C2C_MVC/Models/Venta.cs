@@ -27,6 +27,7 @@ namespace C2C_MVC.Models
         public MPago MPago { get; set; }
         [ForeignKey("UserId")]
         public User User { get; set; }
+        public Buy Buy { get; set; }
 
     }
 }

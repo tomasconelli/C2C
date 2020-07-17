@@ -1,5 +1,6 @@
 ﻿using C2C_MVC.Models;
 using C2C_MVC.ViewModels;
+using Microsoft.AspNet.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -106,7 +107,7 @@ namespace C2C_MVC.Controllers
             return View("Index", vm);
         }
 
-        public ActionResult Venta(int? searchProductoId)
+        public ActionResult Venta(int? searchProductoId, int? MPagoId)
         {
             DetalleVentaViewModel vm = new DetalleVentaViewModel();
             VentaViewModel vm1 = new VentaViewModel();
@@ -115,7 +116,8 @@ namespace C2C_MVC.Controllers
             ViewBag.lastId = lastId;
 
             var query = db.Productoes.AsQueryable();
-            var ventas = db.Ventas.OrderBy(r => r.VentaId).ToList();
+            var query1 = db.Ventas.AsQueryable();
+            var ventas = db.Ventas.OrderByDescending(r => r.VentaId).ToList();
             var productos = db.Productoes.OrderBy(x => x.ProdutoId).ToList();
             var productos1 = db.Productoes.OrderBy(x => x.ProdutoId).ToList();
             var categorias = db.Categorias.OrderBy(z => z.CategoriaId).ToList();
@@ -130,6 +132,9 @@ namespace C2C_MVC.Controllers
                 query = query.Where(x => x.ProdutoId == searchProductoId);
             vm.Productos = query.OrderBy(x => x.NombreProducto).ToList();
 
+            if (MPagoId != null)
+                query1 = query1.Where(x => x.MPagoId == MPagoId);
+            vm1.Ventas = query1.OrderByDescending(x => x.VentaId).ToList();
 
             vm.Productos1 = productos1;
 
@@ -162,12 +167,18 @@ namespace C2C_MVC.Controllers
         public ActionResult GenerarVenta(VentaViewModel model)
         {
             llenarCBProductos();
+            var user = User.Identity.GetUserId<int>();
             if (ModelState.IsValid)
             {
+                var lastId = db.Ventas.Select(x => x.VentaId).Max() + 1;
+                var total = db.DetalleVentas.Where(x => x.VentaId == lastId).ToList();
+                var total1 = total.Sum(x => x.DetalleVentaTotal);
+
+
                 var venta = new Venta();
-                venta.VentaMonto = 1;
+                venta.VentaMonto = total1;
                 venta.NombreCVenta = model.NombreCVenta;
-                venta.UserId = 7;
+                venta.UserId = user;
                 venta.MPagoId = model.MPagoId;
                 venta.VentaFecha = model.VentaFecha;
                 venta.VentaHora = model.VentaHora;

@@ -93,7 +93,7 @@
         cadena = cadena + "<td>" + $("#NombreProducto").val() + "</td>";
         cadena = cadena + "<td>" + $("#DetalleVentaCantidad").val() + "</td>";
         cadena = cadena + "<td>" + $("#DetalleVentaPrecio").val() + "</td>";
-        
+
         var y = 0;
         var x = 0;
         y = $("#DetalleVentaCantidad").val();
@@ -273,74 +273,76 @@
             </form>
         </div>
     </div>
+    <a href="/home">Home</a>
 
-            <script>
-                $(document).ready(function () {
-                    $("#txtnueva").click(function () {
+    <script>
+        $(document).ready(function () {
+            $("#txtnueva").click(function () {
 
-                        $.ajax({
-                            success: function (res) {
-                                alertify.alert("exito");
-                                window.location.reload().ajax();
-                            }
-                        });
-                    });
+                $.ajax({
+                    success: function (res) {
+                        alertify.alert("exito");
+                        window.location.reload().ajax();
+                    }
                 });
-            </script>
+            });
+        });
+    </script>
 
-            <input type="button" id="boton1" value="presioname">
+    <input type="button" id="boton1" value="presioname">
 
-            <script>
-                $(document).ready(function (e) {
-                    $("#boton1").click(function (e) {
-                        alert("Usted ha precionado el boton");
-                    });
-                });
-            </script>
-        </div>
+    <script>
+        $(document).ready(function (e) {
+            $("#boton1").click(function (e) {
+                alert("Usted ha precionado el boton");
+            });
+        });
+    </script>
+</div>
+<a href="/home">Home</a>
 
-        @section scripts
+@section scripts
     {
 
-            <script>
+    <script>
 
 
-                $(document).on('change',
-                    '#product-search',
-                    function () {
-                        var productoId = $(this).val();
+        $(document).on('change',
+            '#product-search',
+            function () {
+                var productoId = $(this).val();
 
-                        fetch('/detalleventa/GetProductoJson?searchProductoId=' + productoId).then(function (res) {
+                fetch('/detalleventa/GetProductoJson?searchProductoId=' + productoId).then(function (res) {
 
-                            return res.json();
+                    return res.json();
 
-                        }).then(function (data) {
-                            var html = '';
-                            for (let item of data) {
-                                html += `
-                                            <tr>
+                }).then(function (data) {
+                    var html = '';
+                    for (let item of data) {
+                        html += `
+                                                <tr>
 
-                                            <td><input style="font-size:15px; font-weight:700;" value="${item.ProdutoId}" type="number" id="ProdutoId" class="form-control" required readonly /></td>
-                                            <td><input style="font-size:15px; font-weight:700;" value="${item.NombreProducto}" class="form-control" type="text" id="NombreProducto" required readonly /></td>
-                                            <td><input style="font-size:15px; font-weight:700;" value="${item.PrecioVPrdoducto}" type="number" id="DetalleVentaPrecio" class="form-control" required readonly /></td>
-                                            <td><input style="font-size:15px; font-weight:700;" class="form-control" type="number" id="DetalleVentaCantidad" value="Ingrese Cantidad" onfocus="this.value = '';" required /></td>
-                                            <td><input style="font-size:15px; font-weight:700;" class="form-control" type="text" id="DetalleVentaObs" value="Sin Observación" onfocus="this.value = '';" required /></td>
-                                            <td><button type="button" onclick="javascript:fn_agregar();"  class="btn btn-save btn-sm" title="Eliminar">
-                                                <i class="fa fa-plus fa-2x"></i>
-                                            </button></td>
-                                            <td><button type="button" onclick="javascript:limpiar();"  class="btn btn-save btn-sm" title="Eliminar">
-                                                <i class="fa fa-trash fa-2x"></i>
-                                            </button></td>
-                                            </tr>
+                                                <td><input style="font-size:15px; font-weight:700;" value="${item.ProdutoId}" type="number" id="ProdutoId" class="form-control" required readonly /></td>
+                                                <td><input style="font-size:15px; font-weight:700;" value="${item.NombreProducto}" class="form-control" type="text" id="NombreProducto" required readonly /></td>
+                                                <td><input style="font-size:15px; font-weight:700;" value="${item.PrecioVPrdoducto}" type="number" id="DetalleVentaPrecio" class="form-control" required readonly /></td>
+                                                <td><input style="font-size:15px; font-weight:700;" class="form-control" type="number" id="DetalleVentaCantidad" value="Ingrese Cantidad" onfocus="this.value = '';" required /></td>
+                                                <td><input style="font-size:15px; font-weight:700;" class="form-control" type="text" id="DetalleVentaObs" value="Sin Observación" onfocus="this.value = '';" required /></td>
+                                                <td><button type="button" onclick="javascript:fn_agregar();"  class="btn btn-save btn-sm" title="Eliminar">
+                                                    <i class="fa fa-plus fa-2x"></i>
+                                                </button></td>
+                                                <td><button type="button" onclick="javascript:limpiar();"  class="btn btn-save btn-sm" title="Eliminar">
+                                                    <i class="fa fa-trash fa-2x"></i>
+                                                </button></td>
+                                                </tr>
 
-                                    `;
-                            }
+                                        `;
+                    }
 
-                            $('#tabla-producto').html(html);
+                    $('#tabla-producto').html(html);
 
-                        });
+                });
 
-                    });
+            });
 
-            </script>
-        }
+    </script>
+}

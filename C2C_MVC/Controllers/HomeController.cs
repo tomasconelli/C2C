@@ -16,5 +16,11 @@ namespace C2C_MVC.Controllers
             return View();
         }
 
+        public ActionResult About()
+        {
+
+            return View();
+        }
+
     }
 }

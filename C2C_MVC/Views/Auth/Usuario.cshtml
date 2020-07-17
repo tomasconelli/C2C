@@ -1,10 +1,16 @@
 ﻿@model C2C_MVC.ViewModels.RegisterViewModel
 @{
     ViewBag.Title = "Usuarios Registrados";
-    
+
 }
 
 <h3 class="card-title">Usuarios Registrados</h3>
+<form class="form-inline mb-3" action="/auth/usuario">
+    <input type="text" name="q" class="form-control" placeholder="Ingrese Nombre" />
+    <button type="submit" class="btn btn-info ml-1">
+        <i class="fa fa-search"></i>
+    </button>
+</form>
 <div class="table-responsive">
     <table class="table table-bordered table-hover table-striped">
         <thead class="thead-darker">
@@ -24,26 +30,28 @@
         @foreach (var item in Model.Users)
         {
 
-        <tr>
+            <tr>
 
-            <td>@item.UserId</td>
-            <td>@item.RutUser</td>
-            <td>@item.NombreCompleto</td>
-            <td>@item.DireccionUser</td>
-            <td>@item.TelefonoUser</td>
-            <td>@item.FenacUser</td>
-            <td>@item.EmailUser</td>
-            <td>@item.Cargo.CargoName</td>
-            <td>@item.EstadoUser</td>
-            <td>
-                <a href="/auth/Delete/@item.UserId" class="btn btn-danger btn-sm" title="Eliminar">
-                    <i class="fa fa-trash"></i>
-                </a>
-                <a href="/auth/Update/@item.UserId" class="btn btn-info btn-sm" title="Modificar">
-                    <i class="fa fa-pencil"></i>
-                </a>
-            </td>
-        </tr>
+                <td>@item.UserId</td>
+                <td>@item.RutUser</td>
+                <td>@item.NombreCompleto</td>
+                <td>@item.DireccionUser</td>
+                <td>@item.TelefonoUser</td>
+                <td>@item.FenacUser</td>
+                <td>@item.EmailUser</td>
+                <td>@item.Cargo.CargoName</td>
+                <td>@item.EstadoUser</td>
+                <td>
+                    <a href="/auth/Delete/@item.UserId" class="btn btn-danger btn-sm" title="Eliminar">
+                        <i class="fa fa-trash"></i>
+                    </a>
+                    <a href="/auth/Update/@item.UserId" class="btn btn-info btn-sm" title="Modificar">
+                        <i class="fa fa-pencil"></i>
+                    </a>
+                </td>
+            </tr>
         }
     </table>
+
 </div>
+<a href="/home">Home</a>

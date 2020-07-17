@@ -204,6 +204,7 @@
             <thead>
                 <tr style="font-size:20px;">
                     <th>Id Venta <input style="color:red; font-size:12px;" class="form-control" type="number" id="id_venta" name="id_venta" value="@ViewBag.lastId" readonly /></th>
+
                     <th>
                         Fecha
                         <input style="color:red;font-size:12px;" class="form-control" type="text" id="id_fecha" readonly value="@DateTime.Now.Day-@DateTime.Now.Month-@DateTime.Now.Year" />
@@ -216,8 +217,7 @@
                     </th>
                 </tr>
             </thead>
-            <tbody>
-            </tbody>
+            <tbody></tbody>
         </table>
         <table>
             <tbody>
@@ -243,7 +243,7 @@
                                             <th>Nombre</th>
                                             <th>Precio</th>
                                             <th>Cantidad</th>
-                                            <th>Observacón</th>
+                                            <th>Observación</th>
                                             <th>Agregar</th>
                                             <th>Limpiar</th>
                                         </tr>
@@ -299,7 +299,7 @@
                                 <td>@item.Producto.NombreProducto</td>
                                 <td>@item.DetalleVentaCantidad</td>
                                 <td>@item.DetalleVentaPrecio</td>
-                                <td class ="price">@item.DetalleVentaTotal</td>
+                                <td class="price">@item.DetalleVentaTotal</td>
                                 <td>@item.DetalleVentaObs</td>
                                 <td>
                                     <a href="/detalleventa/Delete/@item.DetalleVentaId" class="btn btn-danger btn-sm" title="Eliminar">
@@ -315,7 +315,7 @@
                     <tr>
                         <td style="float:right;font-size:20px;">Total a Pagar</td>
                         <th></th>
-                        <td><input style="font-size:20px; font-weight:700;" class="form-control" type="text" name="TotalaPagar" id="sum" required readonly value="0"/></td>
+                        <td><input style="font-size:20px; font-weight:700;" class="form-control" type="text" name="TotalaPagar" id="sum" required readonly value="@ViewData["totalId"]" /></td>
                     </tr>
                     <tbody>
                         <tr style="font-size:20px;">
@@ -335,7 +335,8 @@
                 <input type="hidden" value="@DateTime.Now.Day-@DateTime.Now.Month-@DateTime.Now.Year" name="VentaFecha" class="form-control" />
                 <input type="hidden" value="@DateTime.Now.Hour:@DateTime.Now.Minute:@DateTime.Now.Second" name="VentaHora" class="form-control" />
                 <input class="btn btn-success btn-lg" type="submit" id="finalizar" value="Guardar Venta" />
-                <a href="/venta/venta/" class="btn btn-info btn-xl" title="Ver Ventas">Ver Ventas
+                <a href="/venta/venta/" class="btn btn-info btn-lg" title="Ver Ventas">
+                    Ver Ventas
                     <i class="fa fa-pencil"></i>
                 </a>
             </form>
@@ -355,7 +356,7 @@
             });
         });
     </script>
-     
+
 
     <script>
         $(document).ready(function (e) {
@@ -364,8 +365,9 @@
             });
         });
     </script>
+    
 </div>
-
+<a href="/home">Home</a>
 @section scripts
     {
 
@@ -392,7 +394,7 @@
                                                     <td><input style="font-size:15px; font-weight:700;" value="${item.PrecioVPrdoducto}" type="number" id="DetalleVentaPrecio" name="DetalleVentaPrecio" class="form-control" required readonly /></td>
                                                     <td><input style="font-size:15px; font-weight:700;" class="form-control" type="number" id="DetalleVentaCantidad" name="DetalleVentaCantidad" value="Ingrese Cantidad" onfocus="this.value = '';" required /></td>
                                                     <td><input style="font-size:15px; font-weight:700;" class="form-control" type="text" id="DetalleVentaObs" name="DetalleVentaObs" value="Sin Observación" onfocus="this.value = '';" required /></td>
-                                                    <td><button type="submit" name="searchTicketId" class="btn btn-save btn-sm" title="Agregars">
+                                                    <td><button type="submit" name="searchTicketId" class="btn btn-save btn-sm" title="Agregar">
                                                         <i class="fa fa-plus fa-2x"></i>
                                                     </button></td>
                                                     <td><button type="button" onclick="javascript:limpiar();"  class="btn btn-save btn-sm" title="Eliminar">

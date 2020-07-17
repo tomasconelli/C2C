@@ -24,6 +24,8 @@ namespace C2C_MVC.ViewModels
         [Display(Name = "Apellido")]
         public string ApellidoUser { get; set; }
         [Required]
+        public string SexoUser { get; set; }
+        [Required]
         [Display(Name = "Teléfono")]
         public string TelefonoUser { get; set; }
         [Required]

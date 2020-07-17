@@ -22,13 +22,16 @@ namespace C2C_MVC.Controllers
             db = new ApplicationDbContext();
         }
 
-        public bool init()
+        public bool Init()
         {
-            return Session["UserId"] != null;
+            if (Session["UserId"] == null)
+                return false;
+            return true;
         }
         // GET: Auth
         public ActionResult Index()
         {
+
             return View();
         }
 
@@ -59,7 +62,7 @@ namespace C2C_MVC.Controllers
         public ActionResult Register()
         {
             
-            if (init() == false)
+            if (Init() == false)
             {
                 return RedirectToAction("Login", "Auth");
             }
@@ -86,6 +89,7 @@ namespace C2C_MVC.Controllers
                 user.RutUser = model.RutUser;
                 user.NombreUser = model.NombreUser;
                 user.ApellidoUser = model.ApellidoUser;
+                user.SexoUser = model.SexoUser;
                 user.TelefonoUser = model.TelefonoUser;
                 user.DireccionUser = model.DireccionUser;
                 byte[] psHash, psSalt;
@@ -109,7 +113,7 @@ namespace C2C_MVC.Controllers
 
         public ActionResult Login()
         {
-            OutOwin();
+            Session["RutUser"] = null;
             return View();
         }
         [HttpPost]
@@ -122,6 +126,7 @@ namespace C2C_MVC.Controllers
                
                 if (user != null && PasswordHelper.CheckPassword(model.Password, user.PasswordUserHash, user.PasswordUserSalt))
                 {
+                    Session["UserId"] = user.UserId;
                     InitOwin(user);
                     TempData["SuccessMessage"] = $"Bienvenido { user.NombreCompleto}";
                     return RedirectToAction("Index", "Home");
@@ -134,22 +139,7 @@ namespace C2C_MVC.Controllers
             return RedirectToAction("Login");
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult SignOut(LoginViewModel model)
-        {
 
-            OutOwin();
-            return RedirectToAction("Login");
-        }
-
-        private void OutOwin()
-        {
-            var context = Request.GetOwinContext();
-            var authManager = context.Authentication;
-
-            authManager.SignOut();
-        }
 
 
         private void InitOwin(User user)
@@ -177,7 +167,7 @@ namespace C2C_MVC.Controllers
 
         public ActionResult Usuario(string q)
         {
-            if (init() == false)
+            if (Init() == false)
             {
                 return RedirectToAction("Login", "Auth");
             }
@@ -188,6 +178,9 @@ namespace C2C_MVC.Controllers
             RegisterViewModel vm = new RegisterViewModel();
             vm.Users = users;
             vm.Cargos = cargos;
+
+            if (!string.IsNullOrEmpty(q))
+                vm.Users = vm.Users.Where(x => x.NombreCompleto.ToUpper().Contains(q.ToUpper())).ToList();
 
             foreach (var user in vm.Users)
             {
@@ -233,6 +226,7 @@ namespace C2C_MVC.Controllers
             vm.RutUser = user.RutUser;
             vm.NombreUser = user.NombreUser;
             vm.ApellidoUser = user.ApellidoUser;
+            vm.SexoUser = user.SexoUser;
             vm.TelefonoUser = user.TelefonoUser;
             vm.DireccionUser = user.DireccionUser;
             vm.AliasUser = user.AliasUser;
@@ -260,6 +254,7 @@ namespace C2C_MVC.Controllers
             user.RutUser = vm.RutUser;
             user.NombreUser = vm.NombreUser;
             user.ApellidoUser = vm.ApellidoUser;
+            user.SexoUser = vm.SexoUser;
             user.TelefonoUser = vm.TelefonoUser;
             user.DireccionUser = vm.DireccionUser;
             byte[] psHash, psSalt;
@@ -275,6 +270,23 @@ namespace C2C_MVC.Controllers
             db.SaveChanges();
             TempData["SuccessMessage"] = "Usuario actualizado correctamente";
             return RedirectToAction("Usuario", "auth");
+        }
+        
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult SignOut(LoginViewModel model)
+        {
+
+            OutOwin();
+            return RedirectToAction("Login");
+        }
+
+        private void OutOwin()
+        {
+            var context = Request.GetOwinContext();
+            var authManager = context.Authentication;
+
+            authManager.SignOut();
         }
 
         protected override void Dispose(bool disposing)

@@ -4,7 +4,166 @@
     List<SelectListItem> cargos = (List<SelectListItem>)ViewBag.cargos;
 }
 
-<div class="card">
+
+<script type="text/javascript">
+    /**
+     * Funcion que devuelve true o false dependiendo de si la fecha es correcta.
+     * Tiene que recibir el dia, mes y año
+     */
+    function isValidDate(day, month, year) {
+        var dteDate;
+
+        // En javascript, el mes empieza en la posicion 0 y termina en la 11
+        //   siendo 0 el mes de enero
+        // Por esta razon, tenemos que restar 1 al mes
+        month = month - 1;
+        // Establecemos un objeto Data con los valore recibidos
+        // Los parametros son: año, mes, dia, hora, minuto y segundos
+        // getDate(); devuelve el dia como un entero entre 1 y 31
+        // getDay(); devuelve un num del 0 al 6 indicando siel dia es lunes,
+        //   martes, miercoles ...
+        // getHours(); Devuelve la hora
+        // getMinutes(); Devuelve los minutos
+        // getMonth(); devuelve el mes como un numero de 0 a 11
+        // getTime(); Devuelve el tiempo transcurrido en milisegundos desde el 1
+        //   de enero de 1970 hasta el momento definido en el objeto date
+        // setTime(); Establece una fecha pasandole en milisegundos el valor de esta.
+        // getYear(); devuelve el año
+        // getFullYear(); devuelve el año
+        dteDate = new Date(year, month, day);
+
+        //Devuelva true o false...
+        return ((day == dteDate.getDate()) && (month == dteDate.getMonth()) && (year == dteDate.getFullYear()));
+    }
+
+    /**
+     * Funcion para validar una fecha
+     * Tiene que recibir:
+     *  La fecha en formato ingles yyyy-mm-dd
+     * Devuelve:
+     *  true-Fecha correcta
+     *  false-Fecha Incorrecta
+     */
+    function validate_fecha(fecha) {
+        var patron = new RegExp("^(19|20)+([0-9]{2})([-])([0-9]{1,2})([-])([0-9]{1,2})$");
+
+        if (fecha.search(patron) == 0) {
+            var values = fecha.split("-");
+            if (isValidDate(values[2], values[1], values[0])) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Esta función calcula la edad de una persona y los meses
+     * La fecha la tiene que tener el formato yyyy-mm-dd que es
+     * metodo que por defecto lo devuelve el <input type="date">
+     */
+    function calcularEdad() {
+        var fecha = document.getElementById("FenacUser").value;
+        if (validate_fecha(fecha) == true) {
+            // Si la fecha es correcta, calculamos la edad
+            var values = fecha.split("-");
+            var dia = values[2];
+            var mes = values[1];
+            var ano = values[0];
+
+            // cogemos los valores actuales
+            var fecha_hoy = new Date();
+            var ahora_ano = fecha_hoy.getYear();
+            var ahora_mes = fecha_hoy.getMonth() + 1;
+            var ahora_dia = fecha_hoy.getDate();
+
+            // realizamos el calculo
+            var edad = (ahora_ano + 1900) - ano;
+            if (ahora_mes < mes) {
+                edad--;
+            }
+            if ((mes == ahora_mes) && (ahora_dia < dia)) {
+                edad--;
+            }
+            if (edad > 1900) {
+                edad -= 1900;
+            }
+
+            // calculamos los meses
+            var meses = 0;
+            if (ahora_mes > mes)
+                meses = ahora_mes - mes;
+            if (ahora_mes < mes)
+                meses = 12 - (mes - ahora_mes);
+            if (ahora_mes == mes && dia > ahora_dia)
+                meses = 11;
+
+            // calculamos los dias
+            var dias = 0;
+            if (ahora_dia > dia)
+                dias = ahora_dia - dia;
+            if (ahora_dia < dia) {
+                ultimoDiaMes = new Date(ahora_ano, ahora_mes, 0);
+                dias = ultimoDiaMes.getDate() - (dia - ahora_dia);
+            }
+
+            document.getElementById("result").innerHTML = "Edad " + edad + " años";
+        } else {
+            document.getElementById("result").innerHTML = "La fecha " + fecha + " es incorrecta";
+        }
+    }
+
+
+    function checkRut(RutUser) {
+        // Despejar Puntos
+        var valor = RutUser.value.replace('.', '');
+        // Despejar Guión
+        valor = valor.replace('-', '');
+
+        // Aislar Cuerpo y Dígito Verificador
+        cuerpo = valor.slice(0, -1);
+        dv = valor.slice(-1).toUpperCase();
+
+        // Formatear RUN
+        RutUser.value = cuerpo + '-' + dv
+
+        // Si no cumple con el mínimo ej. (n.nnn.nnn)
+        if (cuerpo.length < 7) { RutUser.setCustomValidity("RUT Incompleto"); return false; }
+
+        // Calcular Dígito Verificador
+        suma = 0;
+        multiplo = 2;
+
+        // Para cada dígito del Cuerpo
+        for (i = 1; i <= cuerpo.length; i++) {
+
+            // Obtener su Producto con el Múltiplo Correspondiente
+            index = multiplo * valor.charAt(cuerpo.length - i);
+
+            // Sumar al Contador General
+            suma = suma + index;
+
+            // Consolidar Múltiplo dentro del rango [2,7]
+            if (multiplo < 7) { multiplo = multiplo + 1; } else { multiplo = 2; }
+
+        }
+
+        // Calcular Dígito Verificador en base al Módulo 11
+        dvEsperado = 11 - (suma % 11);
+
+        // Casos Especiales (0 y K)
+        dv = (dv == 'K') ? 10 : dv;
+        dv = (dv == 0) ? 11 : dv;
+
+        // Validar que el Cuerpo coincide con su Dígito Verificador
+        if (dvEsperado != dv) { RutUser.setCustomValidity("RUT Inválido"); return false; }
+
+        // Si todo sale bien, eliminar errores (decretar que es válido)
+        RutUser.setCustomValidity('');
+    }
+
+</script>
+
+<div class="card mt-3">
     <div class="card-header">
         <h3>Registro de Usuario</h3>
     </div>
@@ -12,69 +171,120 @@
         <form action="" method="post">
             @Html.AntiForgeryToken()
             <div class="form-group">
-                <i class="far fa-address-card"></i><Label>RUT:</Label>
-                <input type="text" name="RutUser" value="@Model.RutUser" class="form-control" />
+                <i class="far fa-address-card"></i> <Label>RUT:</Label>
+                <input type="text" name="RutUser" id="RutUser" value="@Model.RutUser" class="form-control" oninput="checkRut(this)" />
                 @Html.ValidationMessageFor(m => m.RutUser, "", new { @class = "text-danger" })
             </div>
             <div class="form-group">
-                <i class="fas fa-user"> </i><Label> Nombre:</Label>
-                <input type="text" name="NombreUser" value="@Model.NombreUser" class="form-control" />
-                @Html.ValidationMessageFor(m => m.NombreUser, "", new { @class = "text-danger" })
+                <div class="row row-cols-2">
+
+                    <div class="col">
+                        <i class="fas fa-user"> </i> <Label> Nombre:</Label>
+                        <input type="text" name="NombreUser" value="@Model.NombreUser" class="form-control" />
+                        @Html.ValidationMessageFor(m => m.NombreUser, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col">
+                        <i class="fab fa-buysellads"></i> <Label>Apellido:</Label>
+                        <input type="text" name="ApellidoUser" value="@Model.ApellidoUser" class="form-control" />
+                        @Html.ValidationMessageFor(m => m.ApellidoUser, "", new { @class = "text-danger" })
+                    </div>
+                </div>
             </div>
             <div class="form-group">
-                <i class="fab fa-buysellads"></i><Label>Apellido:</Label>
-                <input type="text" name="ApellidoUser" value="@Model.ApellidoUser" class="form-control" />
-                @Html.ValidationMessageFor(m => m.ApellidoUser, "", new { @class = "text-danger" })
-             </div>
-            <div class="form-group">
-                <i class="fas fa-mobile-alt"></i><Label>Telefono:</Label>
-                <input type="text" name="TelefonoUser" value="@Model.TelefonoUser" class="form-control" />
-                @Html.ValidationMessageFor(m => m.TelefonoUser, "", new { @class = "text-danger" })
+                <div class="row row-cols-2">
+
+                    <div class="col">
+                        <i class="fas fa-venus-mars"></i> <Label>Sexo:</Label>
+                        <div class="row justify-content-center">
+
+                            <div class="form-group" data-toggle="buttons">
+
+                                <label class="btn btn-info active">
+                                    <i class="fa fa-male"></i> <input type="radio" name="SexoUser" id="Masculino" value="Masculino" checked> Masculino
+                                </label>
+
+
+                                <label class="btn btn-info">
+                                    <i class="fa fa-female"></i> <input type="radio" name="SexoUser" id="Femenino" value="Femenino"> Femenino
+                                </label>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <i class="fas fa-mobile-alt"></i> <Label>Telefono:</Label>
+                        <input type="text" name="TelefonoUser" value="@Model.TelefonoUser" class="form-control" />
+                        @Html.ValidationMessageFor(m => m.TelefonoUser, "", new { @class = "text-danger" })
+                    </div>
+                </div>
             </div>
+
             <div class="form-group">
-                <i class="fas fa-map-marked-alt"></i><Label>Dirección:</Label>
+                <i class="fas fa-map-marked-alt"></i> <Label>Dirección:</Label>
                 <input type="text" name="DireccionUser" value="@Model.DireccionUser" class="form-control" />
                 @Html.ValidationMessageFor(m => m.DireccionUser, "", new { @class = "text-danger" })
             </div>
             <div class="form-group">
-                <i class="fas fa-key"></i><Label>Contraseña:</Label>
-                <input type="password" name="Password" class="form-control" />
-                @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                <div class="row row-cols-2">
+                    <div class="col">
+                        <i class="fas fa-key"></i> <Label>Contraseña:</Label>
+                        <input type="password" name="Password" class="form-control" />
+                        @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col">
+                        <div class="form-group">
+                            <i class="fas fa-unlock"></i> <Label>Confirmar Contraseña:</Label>
+                            <input type="password" name="ConfirmPassword" class="form-control" />
+                            @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="form-group">
-                <i class="fas fa-unlock"></i><Label>Confirmar Contraseña:</Label>
-                <input type="password" name="ConfirmPassword" class="form-control" />
-                @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-danger" })
+                <div class="row row-cols-3">
+
+                    <div class="col">
+                        <i class="fab fa-odnoklassniki"> </i><Label>Alias:</Label>
+                        <input type="text" name="AliasUser" value="@Model.AliasUser" class="form-control" />
+                        @Html.ValidationMessageFor(m => m.AliasUser, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col">
+                        <i class="fas fa-birthday-cake"> </i><Label>Fecha de Nacimiento:</Label>
+                        <input type="date" name="FenacUser" id="FenacUser" value="@Model.FenacUser" class="form-control" oninput="javascript:calcularEdad();" />
+                        @Html.ValidationMessageFor(m => m.FenacUser, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col">
+                        <i class="fas fa-birthday-cake"> </i><Label></Label>
+                        <div class="row col-lg-10">
+                            <button type="button" class="btn btn-primary col-sm-6" id="result">
+                                Edad <span class="badge badge-light"></span>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
             </div>
             <div class="form-group">
-                <i class="fab fa-odnoklassniki"></i><Label>Alias:</Label>
-                <input type="text" name="AliasUser" value="@Model.AliasUser" class="form-control" />
-                @Html.ValidationMessageFor(m => m.AliasUser, "", new { @class = "text-danger" })
+                <div class="row row-cols-2">
+                    <div class="col">
+                        <i class="far fa-address-card"></i> <Label>Cargo:</Label>
+                        @Html.DropDownList("CargoId", cargos, "Seleccione Cargo", new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.CargoId, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="col">
+                        <i class="fas fa-at"></i> <Label>Email:</Label>
+                        <input type="email" name="EmailUser" value="@Model.EmailUser" class="form-control" />
+                        @Html.ValidationMessageFor(m => m.EmailUser, "", new { @class = "text-danger" })
+                    </div>
+                </div>
             </div>
             <div class="form-group">
-                <i class="fas fa-birthday-cake"></i><Label>Fecha de Nacimiento:</Label>
-                <input type="date" name="FenacUser" value="@Model.FenacUser" class="form-control" />
-                @Html.ValidationMessageFor(m => m.FenacUser, "", new { @class = "text-danger" })
+                <i class="far fa-address-card"></i> <Label>Estado Activo:</Label>
+                <input type="checkbox" data-val="true" data-val-required="The IsChecked field is required." id="EstadoUser" name="EstadoUser" value="Activo">
+                <input name="EstadoUser" type="hidden" value="Inactivo">
             </div>
-            <div class="form-group">
-                <i class="far fa-address-card"></i><Label>Cargo:</Label>
-                @Html.DropDownList("CargoId", cargos, "Seleccione Cargo", new { @class = "form-control" })
-                @Html.ValidationMessageFor(m => m.CargoId, "", new { @class = "text-danger" })
-            </div>
-            <div class="form-group">
-                <i class="fas fa-at"></i><Label>Email:</Label>
-                <input type="email" name="EmailUser" value="@Model.EmailUser" class="form-control" />
-                @Html.ValidationMessageFor(m => m.EmailUser, "", new { @class = "text-danger" })
-            </div>
-            <div class="form-group">
-                <i class="far fa-address-card"></i><Label>Estado:</Label>
-                <select class="custom-select" id="EstadoUser" name="EstadoUser" required>
-                    <option selected disabled value="@Model.EstadoUser">Seleccionar</option>
-                    <option>Activo</option>
-                    <option>Inactivo</option>
-                </select>
-                @Html.ValidationMessageFor(m => m.EstadoUser, "", new { @class = "text-danger" })
-            </div>
+
             <div class="form-group">
                 <button type="submit" class="btn btn-success">Guardar <i class="fa fa-save"></i></button>
                 <button type="reset" class="btn btn-danger">Restablecer <i class="fas fa-trash"></i></button>
@@ -82,4 +292,5 @@
         </form>
     </div>
 </div>
+<a href="/home">Home</a>
 
