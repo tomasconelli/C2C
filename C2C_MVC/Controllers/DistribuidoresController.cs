@@ -45,7 +45,7 @@ namespace C2C_MVC.Controllers
                 if (db.Distribuidors.Any(x => x.RutDistribuidor == model.RutDistribuidor))
                 {
                     TempData["ErrorMessage"] = "El distribuidor ya se encuatra registrado";
-                    return View("Index");
+                    return View("Index", model);
                 }
                 var distribuidor = new Distribuidor();
                 distribuidor.RutDistribuidor = model.RutDistribuidor;

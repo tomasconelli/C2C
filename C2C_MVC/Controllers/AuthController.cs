@@ -83,7 +83,7 @@ namespace C2C_MVC.Controllers
                 if (db.Users.Any(x => x.RutUser == model.RutUser))
                 {
                     ViewData["ErrorMessage"] = "El Rut ya se encuentra registrado.";
-                    return View();
+                    return View(model);
                 }
                 var user = new User();
                 user.RutUser = model.RutUser;

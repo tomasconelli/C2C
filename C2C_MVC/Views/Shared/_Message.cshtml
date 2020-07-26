@@ -1,7 +1,7 @@
-﻿@if (ViewData["ErrorMessage"] != null)
+﻿@if (TempData["ErrorMessage"] != null)
 {
     <div class="alert alert-warning alert-dismissible fade show" role="alert">
-        <strong>Advertencia!</strong> @ViewData["ErrorMessage"]
+        <strong>Advertencia!</strong> @TempData["ErrorMessage"]
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
         </button>

@@ -45,7 +45,7 @@ namespace C2C_MVC.Controllers
                 if (db.MPagoes.Any(x => x.MPagoName == model.MPagoName))
                 {
                     TempData["ErrorMessage"] = "El medio de pago ya se encuatra registrado";
-                    return View("Index", model);
+                    return View(model);
                 }
                 var mpago = new MPago();
                 mpago.MPagoName = model.MPagoName;

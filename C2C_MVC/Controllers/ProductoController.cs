@@ -81,7 +81,7 @@ namespace C2C_MVC.Controllers
                 if (db.Productoes.Any(x => x.NombreProducto == model.NombreProducto))
                 {
                     ViewData["ErrorMessage"] = "El Producto ya se encuentra registrado.";
-                    return View();
+                    return View(model);
                 }
                 var producto = new Producto();
                 producto.NombreProducto = model.NombreProducto;

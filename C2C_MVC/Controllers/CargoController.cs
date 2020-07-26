@@ -32,7 +32,7 @@ namespace C2C_MVC.Controllers
             var cargos = db.Cargoes.OrderBy(x => x.CargoId).ToList();
 
             CargoViewModel vm = new CargoViewModel();
-            vm.Cargos = cargos;
+            /*vm.Cargos = cargos;*/
             return View(vm);
         }
 
@@ -40,12 +40,15 @@ namespace C2C_MVC.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Crear(CargoViewModel model)
         {
+            
+
             if (ModelState.IsValid)
             {
                 if (db.Cargoes.Any(x => x.CargoName == model.CargoName))
                 {
                     TempData["ErrorMessage"] = "El cargo ya se encuatra registrado";
-                    return View("Index", model);
+                    
+                    return RedirectToAction("Index");
                 }
                 var cargo = new Cargo();
                 cargo.CargoName = model.CargoName;
@@ -57,7 +60,7 @@ namespace C2C_MVC.Controllers
             }
 
             var cargos = db.Cargoes.OrderBy(x => x.CargoId).ToList();
-            
+
             model.Cargos = cargos;
 
             return View("Index", model);
